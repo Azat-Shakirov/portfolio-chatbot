@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+langchain
+langchain-anthropic
+langchain-community
+langchain-huggingface
+chromadb
+sentence-transformers
+anthropic
+slowapi
+pydantic-settings
+httpx
+python-multipart
+
+# Testing
+pytest
+pytest-asyncio
