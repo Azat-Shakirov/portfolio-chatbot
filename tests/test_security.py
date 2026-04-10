@@ -123,3 +123,27 @@ async def test_verify_recaptcha_v2_returns_false_on_failure():
         mock_client.return_value.__aexit__ = AsyncMock(return_value=False)
         result = await verify_recaptcha_v2("bad-v2-token")
     assert result is False
+
+
+async def test_verify_recaptcha_v3_returns_zero_on_network_error():
+    import httpx as httpx_module
+    from app.security import verify_recaptcha_v3
+    with patch("app.security.httpx.AsyncClient") as mock_client:
+        mock_client.return_value.__aenter__ = AsyncMock(
+            side_effect=httpx_module.ConnectError("timeout")
+        )
+        mock_client.return_value.__aexit__ = AsyncMock(return_value=False)
+        score = await verify_recaptcha_v3("any-token")
+    assert score == 0.0
+
+
+async def test_verify_recaptcha_v2_returns_false_on_network_error():
+    import httpx as httpx_module
+    from app.security import verify_recaptcha_v2
+    with patch("app.security.httpx.AsyncClient") as mock_client:
+        mock_client.return_value.__aenter__ = AsyncMock(
+            side_effect=httpx_module.ConnectError("timeout")
+        )
+        mock_client.return_value.__aexit__ = AsyncMock(return_value=False)
+        result = await verify_recaptcha_v2("any-token")
+    assert result is False
