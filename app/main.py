@@ -51,7 +51,7 @@ async def require_user_agent(request: Request, call_next):
 # ── Request schema ────────────────────────────────────────────────────────────
 class ChatRequest(BaseModel):
     message: str
-    personality: str = "casual"
+    personality: str = settings.default_personality
     recaptcha_v3_token: str = ""
     recaptcha_v2_token: str = ""
 
@@ -88,9 +88,9 @@ async def chat(request: Request, body: ChatRequest):
         if not v2_ok:
             raise HTTPException(status_code=403, detail=ERROR_MESSAGES["recaptcha"])
 
-    # 2. Daily budget pre-check (rough guard — exact deduction happens post-stream)
-    if get_budget_remaining() < 100:
-        raise HTTPException(status_code=429, detail=ERROR_MESSAGES["daily_budget"])
+    # 2. Daily budget pre-check (exact deduction happens post-stream)
+    if get_budget_remaining() <= 0:
+        return JSONResponse({"error": ERROR_MESSAGES["daily_budget"]}, status_code=429)
 
     # 3. Sanitize
     clean_message = sanitize_input(body.message)
