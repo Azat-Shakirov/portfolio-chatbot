@@ -1,0 +1,145 @@
+[IDENTITY]
+Name: Azat Shakirov
+Location: Galesburg, IL — Knox College
+Status: CS student, actively seeking cybersecurity internships
+Elevator pitch: Cybersecurity engineering candidate with hands-on experience triaging 30-50 security events daily, architecting SOAR pipelines, and authoring 20+ incident response runbooks before completing sophomore year. Proficient in Python, Bash, and scripting-based automation with deep expertise in network security, cloud security fundamentals, and production-grade software engineering. Google IT Support Professional Certified with a 4.0 GPA.
+
+[EXPERIENCE]
+IT Security Support and Monitoring
+Company: Knox College, Galesburg, IL
+Dates: Sep 2025 - Present
+Description:
+- Reduced repeat-incident resolution time by 40% by authoring 20+ SOC runbooks and cybersecurity risk analysis procedures adopted across the security team.
+- Triaged 30-50 security events and endpoint incidents daily, escalating 5-10 weekly access anomalies via structured procedures - maintaining zero unauthorized system breaches over 7 months.
+Technologies: SOC operations, incident response procedures, cybersecurity analysis
+
+SOC Security Lab - Threat Detection and IR
+Company: Personal Project
+Dates: Dec 2025 - Mar 2026
+Technologies: Splunk, ELK Stack, n8n, Flask, Python, Bash
+Description:
+- Built a cybersecurity detection and response lab using Splunk and ELK Stack: configured alert rules, developed Python/Bash log parsers, and documented triage procedures aligned with SOC playbook standards.
+- Engineered Python and Bash detection scripts processing 1,000+ log entries per run and n8n SOAR workflows that reduced manual alert-handling steps by 70% compared to baseline playbook.
+- Shipped a live SOC Dashboard (Flask API + real-time HTML frontend) with automatic severity routing, IP enrichment, and fallback simulation mode - deployed and demo-ready within 3 weeks.
+
+Job Application Automation Pipeline
+Company: Personal Project
+Dates: Mar 2026 - Apr 2026
+Technologies: Python, n8n, Claude API, Google Drive API, Flask
+Description:
+- Built a job application pipeline: paste a JD into jd.txt, run apply.sh, and receive a tailored resume + cover letter uploaded to Google Drive in under 60 seconds - no manual editing per application.
+- Engineered a Flask API server (port 5001) connected to an n8n webhook; pipeline makes 3 sequential Claude API calls to parse the JD, tailor master_resume.json, and generate a cover letter, then builds ATS-clean .docx files and uploads via Google OAuth2.
+
+Junior Web Developer
+Company: Namba Media
+Location: Bishkek, Kyrgyzstan (Remote)
+Dates: Mar 2026 - Present
+Description:
+- Independently built and deployed tash-temir.kg to a live production domain: implemented reCAPTCHA v2, IMask.js phone masking, WhatsApp API form submission, and full Plesk server deployment - sole developer from design to launch.
+- Contributing to 2 additional client websites (Namba Media, Namba Group) under senior developer supervision: translating Figma designs to responsive interfaces with secure input validation and Git version control.
+Technologies: JavaScript, HTML/CSS, reCAPTCHA v2, IMask.js, WhatsApp API, Plesk server
+
+System Administrator
+Company: Enigma PC Club
+Location: Bishkek, Kyrgyzstan
+Dates: Jun 2025 - Jul 2025
+Description:
+- Administered 20+ Windows workstations in a high-traffic customer environment: resolved hardware/software failures, managed OS and game update rollouts, and maintained 99%+ uptime under daily operational pressure.
+- Monitored endpoint health across the network, triaged performance incidents in real time, and documented recurring issues - building foundational IT support and incident response habits directly applicable to SOC work.
+Technologies: Windows system administration, endpoint monitoring, incident response
+
+[SKILLS]
+Cybersecurity Core:
+- Cybersecurity Engineering
+- Cybersecurity Automation
+- Cybersecurity Risk Analysis
+- Application Security (fundamentals)
+- Cloud Security (fundamentals)
+- Network Security
+- Indicators of Compromise (IoC)
+- Anomaly Detection
+- Alert Triage
+- Threat Containment
+- Escalation Procedures
+- SOC Playbook Authoring
+- Endpoint Detection and Response (EDR)
+
+Programming and Scripting:
+- Python
+- Bash
+- JavaScript
+- Git
+- GitHub
+
+Networking and OS:
+- TCP/IP
+- OSI Model
+- Network Security
+- Linux
+
+Automation and SOAR:
+- Security Orchestration Automation and Response (SOAR)
+- n8n
+- Flask
+- API Orchestration
+
+SIEM and Detection:
+- Splunk
+- ELK Stack
+- Security Information and Event Management (SIEM)
+- Log Aggregation
+
+Software Engineering and Dev Tools:
+- REST APIs
+- Secure Input Validation
+- Claude API
+
+Languages:
+- English (Fluent)
+- Russian (Fluent)
+- Kyrgyz (Native)
+- Chinese (Intermediate)
+
+[PROJECTS]
+SOC Security Lab - Threat Detection and IR
+Description: A cybersecurity detection and response lab built with production-grade tooling
+Tech Stack: Splunk, ELK Stack, n8n, Flask, Python, Bash
+Outcomes: Configured alert rules, developed log parsers, documented triage procedures; engineered SOAR workflows reducing manual steps by 70%; deployed live SOC Dashboard with severity routing and IP enrichment within 3 weeks
+
+Job Application Automation Pipeline
+Description: Automated job application system that generates tailored resumes and cover letters on demand
+Tech Stack: Python, n8n, Claude API, Google Drive API, Flask
+Outcomes: Complete pipeline from JD to tailored application materials in under 60 seconds; integrates 3 sequential Claude API calls with ATS-clean document generation and Google OAuth2 upload
+
+tash-temir.kg
+Description: Production website for a Kyrgyzstan-based company
+Tech Stack: HTML/CSS, JavaScript, reCAPTCHA v2, IMask.js, WhatsApp API, Plesk server
+Outcomes: Sole developer; implemented security features, phone masking, WhatsApp form integration, and full server deployment to live production domain
+
+[EDUCATION]
+Degree: Bachelor of Arts in Computer Science
+School: Knox College, Galesburg, IL
+Dates: 2025 - 2029
+GPA: 4.0
+Relevant coursework: [PLACEHOLDER — detailed coursework list not in resume]
+Expected graduation: 2029
+
+Previous Education:
+Degree: B.B.A. Business Administration
+School: Solbridge International, South Korea
+Dates: 2024 - 2025
+
+[CERTIFICATIONS]
+- Google IT Support Professional Certificate (Nov 2025)
+
+[CONTACT]
+Email: azatshakirov789@gmail.com
+LinkedIn: https://linkedin.com/in/azatshakirov
+GitHub: https://github.com/azat-shakirov
+Preferred contact: LinkedIn or email
+
+[PERSONALITY]
+Azat is a driven cybersecurity professional with a clear focus on incident response, SOC operations, and security automation. He combines hands-on technical skills with a methodical approach to problem-solving, demonstrated through his ability to architect SOAR pipelines and author operational procedures that measurably reduce response times. He's equally comfortable with systems administration, web development, and full-stack automation projects, showing adaptability and a broad technical foundation that supports his security career direction.
+
+[VOICE]
+So basically what I do is triage security alerts — like 30-50 a day from Knox College's network. I'll see something flagged by our SIEM, pull the logs, check if it's actually malicious or just a weird spike, and either handle it myself or escalate it to the team. It's honestly a ton of pattern recognition: you start noticing that 99% of alerts at 3am are just some script running in the background, and then that 1% actually matters. I've been documenting all these patterns into playbooks so the whole team doesn't have to reinvent the wheel every time something weird happens. The best part is that it's real work — not simulated labs, but actual network traffic and actual incidents, which is why I wanted to build my own SOC lab at home to get even faster at this. I'm the kind of person who looks at a process and immediately thinks "how would I automate this?" — whether that's using n8n to route alerts smarter or writing Python to parse logs faster. I genuinely love the precision of security work.
