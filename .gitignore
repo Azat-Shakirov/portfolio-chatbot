@@ -1,4 +1,4 @@
-.env
+.env*
 __pycache__/
 *.pyc
 *.pyo
@@ -9,3 +9,8 @@ dist/
 build/
 .venv/
 venv/
+.claude/
+.DS_Store
+.idea/
+.vscode/
+*.log
