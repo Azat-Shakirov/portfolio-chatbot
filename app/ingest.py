@@ -3,6 +3,7 @@ Run this script once after editing data/about_me.txt to rebuild the ChromaDB ind
 Usage: python app/ingest.py
 Railway: runs automatically on first deploy via start.sh if chroma_db is empty.
 """
+import shutil
 from pathlib import Path
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
@@ -34,7 +35,6 @@ def get_embeddings() -> HuggingFaceEmbeddings:
 
 def build_index(chunks: list[str], embeddings: HuggingFaceEmbeddings) -> None:
     # Wipe existing index so re-runs don't accumulate stale chunks
-    import shutil
     if CHROMA_PATH.exists():
         shutil.rmtree(CHROMA_PATH)
     Chroma.from_texts(
