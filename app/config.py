@@ -1,6 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import computed_field
-from typing import List
 
 
 class Settings(BaseSettings):
@@ -19,7 +18,7 @@ class Settings(BaseSettings):
 
     @computed_field
     @property
-    def origins_list(self) -> List[str]:
+    def origins_list(self) -> list[str]:
         return [o.strip() for o in self.allowed_origins.split(",") if o.strip()]
 
 
