@@ -1,6 +1,6 @@
 # tests/test_main.py
 import pytest
-from unittest.mock import AsyncMock, patch, MagicMock
+from unittest.mock import AsyncMock, patch
 from fastapi.testclient import TestClient
 
 
@@ -85,3 +85,5 @@ def test_chat_returns_429_when_budget_exhausted(client):
                 headers={"user-agent": "pytest"},
             )
     assert resp.status_code == 429
+    data = resp.json()
+    assert "error" in data

@@ -1,6 +1,6 @@
 # app/main.py
 import json
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -86,7 +86,7 @@ async def chat(request: Request, body: ChatRequest):
             return JSONResponse({"challenge": True})
         v2_ok = await verify_recaptcha_v2(body.recaptcha_v2_token)
         if not v2_ok:
-            raise HTTPException(status_code=403, detail=ERROR_MESSAGES["recaptcha"])
+            return JSONResponse({"error": ERROR_MESSAGES["recaptcha"]}, status_code=403)
 
     # 2. Daily budget pre-check (exact deduction happens post-stream)
     if get_budget_remaining() <= 0:
