@@ -1,0 +1,186 @@
+YOKO — ENGINEERING CHALLENGES & HOW THEY WERE SOLVED
+======================================================
+
+A detailed account of the real problems encountered while building and deploying
+Yoko, the AI chatbot for Azat Shakirov's portfolio. Written for technical
+conversations with recruiters and engineers.
+
+──────────────────────────────────────────────────────────────────────────────
+1. DOCKER IMAGE SIZE EXCEEDING RAILWAY'S 4 GB LIMIT
+──────────────────────────────────────────────────────────────────────────────
+
+Problem:
+  Railway enforces a 4 GB Docker image limit. The initial image was 5.8 GB —
+  too large to deploy. The culprit was PyTorch, which sentence-transformers
+  pulls in as a dependency. The default PyTorch install includes CUDA GPU
+  support, which is ~3.5 GB on its own — completely unnecessary for a server
+  that only runs CPU inference.
+
+Diagnosis:
+  Traced the bloat to the PyTorch install step by examining layer sizes during
+  the build. The sentence-transformers package doesn't distinguish between CPU
+  and GPU installs — it pulls the full PyTorch by default.
+
+Fix:
+  Installed the CPU-only build of PyTorch explicitly before sentence-transformers,
+  using PyTorch's dedicated CPU index URL:
+    pip install torch --index-url https://download.pytorch.org/whl/cpu
+  This reduced the image from 5.8 GB to under 4 GB.
+
+Lesson:
+  ML dependencies need explicit size management in containerised environments.
+  Default package installs optimise for capability, not deployment constraints.
+
+──────────────────────────────────────────────────────────────────────────────
+2. RATE LIMITER SILENTLY BROKEN DUE TO LIBRARY INCOMPATIBILITY
+──────────────────────────────────────────────────────────────────────────────
+
+Problem:
+  SlowAPI (the rate limiting library) was configured and appeared correct in
+  code — decorator on the endpoint, limiter registered on app state, exception
+  handler wired up. Yet sending 10+ rapid requests produced no 429 responses.
+  The rate limit was silently doing nothing.
+
+Diagnosis:
+  The root cause was a version incompatibility. The requirements.txt had no
+  version pins, so Railway installed the latest versions of all packages on
+  every deploy. SlowAPI 0.1.9 had not been updated for Starlette 1.0.0 (a
+  major version with breaking changes). The decorator registered without error
+  but never actually enforced limits at runtime — a silent failure with no
+  exception or warning in logs.
+
+  A secondary issue: the rate limiter was keying by raw remote address, which
+  on Railway returns the load balancer's IP rather than the real client IP.
+  Even if SlowAPI had worked, all users would have shared a single rate limit
+  bucket.
+
+Fix:
+  Replaced SlowAPI entirely with a custom sliding-window rate limiter — roughly
+  20 lines of pure Python using a defaultdict of timestamps. No external
+  dependency, no compatibility risk. Also read the real client IP from the
+  X-Forwarded-For header, which Railway's reverse proxy sets correctly.
+
+Lesson:
+  Unpinned dependencies in ML/web stacks are a latent failure waiting to happen.
+  Silent security failures (no exception, no log) are worse than loud ones.
+  When a security library doesn't work, the system appears secure but isn't.
+
+──────────────────────────────────────────────────────────────────────────────
+3. UNPINNED DEPENDENCIES BROKE PRODUCTION AFTER A ROUTINE REDEPLOY
+──────────────────────────────────────────────────────────────────────────────
+
+Problem:
+  After a routine code change triggered a Railway redeploy, response times went
+  from ~2 seconds to 15+ seconds per message. The chatbot was effectively
+  unusable. This had not been a problem on the previous deploy.
+
+Diagnosis:
+  The Railway logs showed the sentence-transformers embedding model loading its
+  weights on every single request — not just on cold start. The module-level
+  singleton that should have cached the model in memory was not working.
+
+  The redeploy had installed newer (unpinned) versions of langchain and
+  langchain-community. In the newer version, the Chroma vector store class from
+  langchain-community was deprecated and its replacement (langchain-chroma)
+  handles embedding initialisation differently. The deprecated class was likely
+  re-instantiating the embedding model internally on each similarity search call,
+  bypassing the singleton cache.
+
+Fix:
+  Three changes in combination:
+  1. Switched from the deprecated langchain_community.Chroma to the current
+     langchain_chroma.Chroma package.
+  2. Added version range constraints to requirements.txt so pip cannot install
+     versions with known breaking changes.
+  3. Added a FastAPI startup event that calls the vectorstore initialisation
+     function at server boot — ensuring the model is warm before the first
+     user request rather than loading lazily on it.
+
+Lesson:
+  Unpinned dependencies in production are a reliability risk, not just a
+  security one. A working system can break silently on the next deploy when
+  a transitive dependency updates. LangChain in particular moves fast and
+  deprecates classes frequently.
+
+──────────────────────────────────────────────────────────────────────────────
+4. RAILWAY START COMMAND PERMISSION DENIED
+──────────────────────────────────────────────────────────────────────────────
+
+Problem:
+  After building the Docker image successfully, Railway failed to start the
+  container with: "We don't have permission to execute your start command."
+  The start command was `bash start.sh`.
+
+Diagnosis:
+  The start.sh file was committed to git without the executable bit set
+  (chmod +x). Git tracks file permissions, and the file was pushed as
+  non-executable. Railway's container tried to run it and was denied by
+  the OS.
+
+Fix:
+  Set the executable bit on the file in git's index:
+    git update-index --chmod=+x start.sh
+  Then pushed the change. Railway detected the correct permissions on next
+  deploy and started successfully.
+
+Lesson:
+  Git tracks the executable bit. Shell scripts must have +x set explicitly
+  before committing, especially when moving between development environments
+  where umask defaults differ.
+
+──────────────────────────────────────────────────────────────────────────────
+5. CORS AND ENVIRONMENT VARIABLE MISCONFIGURATIONS ACROSS TWO PLATFORMS
+──────────────────────────────────────────────────────────────────────────────
+
+Problem:
+  After deploying backend to Railway and frontend to Vercel, the live site
+  returned "Something went wrong" on every message. The Railway backend was
+  healthy. The frontend JS console showed a CORS error.
+
+Diagnosis:
+  Two separate misconfigurations compounded each other:
+  1. The NEXT_PUBLIC_BACKEND_URL environment variable in Vercel was missing
+     the https:// prefix (set to the Railway hostname only, not the full URL).
+     The frontend was constructing invalid request URLs.
+  2. The CORS allowed origins on the backend did not include the Vercel
+     production domain — only localhost was in the list.
+
+  These were found by reading the network tab in browser devtools, which showed
+  the exact malformed URL being requested and the CORS rejection headers.
+
+Fix:
+  Added all three NEXT_PUBLIC_ keys to Vercel's environment variables dashboard.
+  Corrected the backend URL to include https://. Updated the Railway environment
+  variable ALLOWED_ORIGINS to include the full Vercel domain.
+
+Lesson:
+  When a system spans two hosting platforms, environment variable configuration
+  is a failure surface on both sides independently. Full-stack debugging requires
+  checking the network layer (browser devtools), not just application logs.
+
+──────────────────────────────────────────────────────────────────────────────
+6. CHROMADB TELEMETRY ERRORS IN LOGS (NON-BREAKING)
+──────────────────────────────────────────────────────────────────────────────
+
+Problem:
+  Railway logs filled with repeated errors:
+    "Failed to send telemetry event ClientStartEvent: capture() takes 1
+    positional argument but 3 were given"
+
+Diagnosis:
+  ChromaDB attempts to send anonymous usage telemetry on startup and on each
+  collection operation. A version mismatch between ChromaDB and its internal
+  telemetry dependency (posthog) caused the telemetry calls to fail with a
+  Python argument error. Since ChromaDB catches these exceptions internally,
+  the errors are logged but do not affect functionality.
+
+Fix:
+  No fix required — these are warnings, not failures. ChromaDB continues to
+  operate correctly. The errors can be suppressed by setting the environment
+  variable ANONYMIZED_TELEMETRY=false in Railway, which disables ChromaDB's
+  telemetry entirely.
+
+Lesson:
+  Not all logged errors require action. Understanding whether an error is in
+  the critical path (blocks functionality) or a background side effect
+  (telemetry, metrics) is an important debugging skill.

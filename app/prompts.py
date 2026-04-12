@@ -59,7 +59,7 @@ ERROR_MESSAGES: dict[str, str] = {
         "Try again in a minute."
     ),
     "daily_budget": (
-        "DAILY_BUDGET_PLACEHOLDER — replace this with your custom message before going live."
+        "Yoko has hit her daily thinking limit. Check back tomorrow!"
     ),
     "network": "Something went wrong on my end. Please try again in a moment.",
     "recaptcha": "I couldn't verify your request. Please try again.",
