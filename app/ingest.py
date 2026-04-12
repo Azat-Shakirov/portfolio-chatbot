@@ -6,7 +6,7 @@ Railway: runs automatically on first deploy via start.sh if chroma_db is empty.
 import shutil
 from pathlib import Path
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 
 DATA_PATH = Path(__file__).parent.parent / "data" / "about_me.txt"

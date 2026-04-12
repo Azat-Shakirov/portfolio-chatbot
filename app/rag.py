@@ -1,6 +1,6 @@
 # app/rag.py
 from pathlib import Path
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from anthropic import AsyncAnthropic
 from app.config import settings
@@ -31,6 +31,11 @@ def _get_vectorstore() -> Chroma:
     return _vectorstore
 
 
+def warmup() -> None:
+    """Pre-load the embedding model and vectorstore at startup."""
+    _get_vectorstore()
+
+
 def retrieve_chunks(question: str, k: int = 3) -> list[str]:
     """Return the top-k most semantically similar chunks to the question."""
     vs = _get_vectorstore()
@@ -53,21 +58,26 @@ async def stream_response(question: str, personality: str):
     """
     Async generator. Yields (text_chunk, None) for each streamed token,
     then yields ("", total_token_count) as the final item.
+    On error, yields an error message chunk then ("", 0).
     """
     chunks = retrieve_chunks(question)
     system, user_message = build_prompt(question, chunks, personality)
 
     client = AsyncAnthropic(api_key=settings.claude_api_key)
 
-    async with client.messages.stream(
-        model=CLAUDE_MODEL,
-        max_tokens=MAX_TOKENS,
-        system=system,
-        messages=[{"role": "user", "content": user_message}],
-    ) as stream:
-        async for text in stream.text_stream:
-            yield text, None
-        final = await stream.get_final_message()
-        total_tokens = final.usage.input_tokens + final.usage.output_tokens
+    try:
+        async with client.messages.stream(
+            model=CLAUDE_MODEL,
+            max_tokens=MAX_TOKENS,
+            system=system,
+            messages=[{"role": "user", "content": user_message}],
+        ) as stream:
+            async for text in stream.text_stream:
+                yield text, None
+            final = await stream.get_final_message()
+            total_tokens = final.usage.input_tokens + final.usage.output_tokens
 
-    yield "", total_tokens
+        yield "", total_tokens
+    except Exception:
+        yield "Something went wrong on my end. Please try again.", None
+        yield "", 0
