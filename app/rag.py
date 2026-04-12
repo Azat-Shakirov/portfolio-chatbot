@@ -12,7 +12,7 @@ from app.prompts import (
 
 CHROMA_PATH = Path(__file__).parent.parent / "chroma_db"
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
-CLAUDE_MODEL = "claude-sonnet-4-20250514"
+CLAUDE_MODEL = "claude-haiku-4-5-20251001"
 MAX_TOKENS = 1024
 
 # Module-level singletons — loaded once on first use
