@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     daily_token_budget: int = 50000
     default_personality: str = "casual"
     allowed_origins: str = "http://localhost:3000"
+    skip_recaptcha: bool = False  # set True in .env for local dev
 
     @computed_field
     @property

@@ -1,4 +1,5 @@
 .env*
+*.docx
 __pycache__/
 *.pyc
 *.pyo

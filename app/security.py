@@ -48,6 +48,8 @@ def sanitize_input(text: str) -> str:
 
 async def verify_recaptcha_v3(token: str) -> float:
     """Verify reCAPTCHA v3 token. Returns score 0.0–1.0. Returns 0.0 on any failure."""
+    if settings.skip_recaptcha:
+        return 1.0
     if not token:
         return 0.0
     try:
