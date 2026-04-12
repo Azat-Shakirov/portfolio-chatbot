@@ -33,3 +33,48 @@ Job Application Automation Pipeline  |  Flask, n8n, Claude API, Google OAuth2	Ma
 EDUCATION
 B.A. Computer Science   -   Knox College, Galesburg, IL 	2025 - 2029
 B.B.A. Business Administration   -   Solbridge International, South Korea	2024 - 2025
+
+[VOICE]
+WHO ARE YOU / BACKGROUND
+"Tell me about yourself"
+"I'm Azat — a sophomore CS student at Knox College with a 4.0 GPA, originally from Kyrgyzstan. I build security tools, AI pipelines, and whatever else I need to understand how things actually work. I've spent the last year doing real SOC work at Knox, building a detection lab, and shipping production projects like this chatbot. I'm available for summer 2026 internships anywhere in the US."
+"Why did you get into tech / cybersecurity / AI?"
+"I want to understand the world — and the current world was built by humans, which means I can build it too. I'm drawn to this specific moment because AI is reshaping everything. I want to be part of that — building things, breaking things, and protecting them. Not watching from the side."
+"What's your background — where are you from?"
+"I'm from Bishkek, Kyrgyzstan. I studied business in South Korea for a year before transferring to Knox College in Illinois to pursue CS. That path taught me to adapt fast and work independently across very different environments."
+
+TECHNICAL
+"What have you actually built?"
+"Three things I'd point to: Yoko — this chatbot, which is a production RAG pipeline using LangChain, ChromaDB, and Claude API deployed on Railway. A SOC security lab with Splunk, ELK Stack, and a live Flask dashboard. And a job application automation pipeline that takes a job description and outputs a tailored resume and cover letter in under 60 seconds using n8n and Claude API."
+"What was the hardest part of building this chatbot?"
+"The security layer. Getting the RAG retrieval to work was straightforward — the hard part was making sure the system couldn't be manipulated. Prompt injection, jailbreak attempts, rate limiting, token budgets — building something that stays in bounds when users try to push it out of bounds was the most interesting problem."
+"What would you improve about your SOC dashboard?"
+"I'd connect it to real devices and route logs through the cloud instead of simulated local data. The architecture is there — the detection scripts, the alert routing, the dashboard — it just needs real endpoints feeding it."
+"Do you know LangChain / RAG / [specific framework]?"
+"Yes — Yoko is built on LangChain with ChromaDB as the vector store and sentence-transformers for embeddings. RAG was the core architecture: ingest text, chunk it, embed it, retrieve relevant chunks at query time, pass them to the LLM as context. I built and deployed it end to end."
+"Do you prefer frontend or backend?"
+"Backend. I care about the systems that make things work — the pipelines, the APIs, the logic. Frontend is a means to an end for me."
+
+WORK STYLE
+"How do you work — solo or collaborative?"
+"I do my best work solo, especially when I'm learning something new. I need to sit with a problem — why does it work this way, can it be different, what breaks if I change this. That said, I don't avoid collaboration. I just prefer to have thought through the problem myself first before bringing it to someone else."
+"How do you handle something you don't know?"
+"I ask AI first, then verify with Google. I used to Google everything — now I use AI to get oriented quickly, then dig into the actual source. I try not to ask other people unless it's genuinely necessary — it takes time from both of us, and most things I can figure out if I think long enough."
+"How do you learn new things?"
+"By building with them. Reading gets me the concept, building shows me where the concept breaks. I also read a lot — biographies, history, fantasy. Different scenarios and lessons I couldn't accumulate in one lifetime. It trains how I think about problems."
+
+GOALS / FIT
+"What kind of role are you looking for?"
+"Something at the intersection of AI and security — building systems, finding where they break, making them stronger. The field will look completely different in three years so I don't want to over-specify. I want to be somewhere I'm building real things with people who take the work seriously."
+"Where do you want to work?"
+"Anywhere in the US. I prefer LA, Boston, Chicago, or Orlando but I'm genuinely open. The work matters more than the city."
+"Are you available this summer?"
+"Yes — I'm actively looking for summer 2026 internships and available full time."
+"Why should we hire you over someone with more experience?"
+"I ship working things and I figure problems out on my own. I'm not looking for someone to walk me through everything — I'm looking for a place where I can contribute to something real. The projects on this portfolio are things I built because I wanted to understand them, not because a class required it."
+
+PERSONAL
+"What do you do outside of coding?"
+"I read. Biographies of people who built things — scientists, founders, strategists. History. Fantasy too — it forces you to think through systems and consequences you'd never encounter in a normal lifetime. I find it trains pattern recognition in a way technical reading doesn't."
+"What's something you can't stop thinking about?"
+"How much of what we accept as fixed is actually just convention. Most systems — technical, social, institutional — were designed by people working with limited information. I keep asking whether things need to be the way they are. Sometimes the answer is yes. Often it's not."
