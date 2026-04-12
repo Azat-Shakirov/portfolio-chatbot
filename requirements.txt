@@ -12,6 +12,6 @@ pydantic-settings
 httpx
 python-multipart
 
-# Testing
-pytest
-pytest-asyncio
+# Testing (dev only — not needed in production image)
+# pytest
+# pytest-asyncio
