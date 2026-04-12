@@ -51,16 +51,10 @@ app = FastAPI(title="Yoko — Portfolio Chatbot API", docs_url=None, redoc_url=N
 async def startup_event():
     warmup()
 
-# ── CORS ──────────────────────────────────────────────────────────────────────
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.origins_list,
-    allow_methods=["POST", "GET", "OPTIONS"],
-    allow_headers=["content-type"],
-)
-
 
 # ── User-Agent middleware ─────────────────────────────────────────────────────
+# Must be registered BEFORE CORSMiddleware so CORS is outermost and adds
+# Access-Control-Allow-Origin even to 400 responses from this middleware.
 @app.middleware("http")
 async def require_user_agent(request: Request, call_next):
     if request.method in ("POST", "PUT", "PATCH"):
@@ -71,6 +65,17 @@ async def require_user_agent(request: Request, call_next):
                 status_code=400,
             )
     return await call_next(request)
+
+
+# ── CORS ──────────────────────────────────────────────────────────────────────
+# Registered after the User-Agent middleware so it wraps everything and
+# adds Access-Control-Allow-Origin to all responses, including errors.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.origins_list,
+    allow_methods=["POST", "GET", "OPTIONS"],
+    allow_headers=["content-type"],
+)
 
 
 # ── Request schema ────────────────────────────────────────────────────────────
