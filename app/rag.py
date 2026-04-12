@@ -18,6 +18,7 @@ MAX_TOKENS = 1024
 # Module-level singletons — loaded once on first use
 _embeddings: HuggingFaceEmbeddings | None = None
 _vectorstore: Chroma | None = None
+_client: AsyncAnthropic | None = None
 
 
 def _get_vectorstore() -> Chroma:
@@ -31,12 +32,20 @@ def _get_vectorstore() -> Chroma:
     return _vectorstore
 
 
+def _get_client() -> AsyncAnthropic:
+    global _client
+    if _client is None:
+        _client = AsyncAnthropic(api_key=settings.claude_api_key)
+    return _client
+
+
 def warmup() -> None:
-    """Pre-load the embedding model and vectorstore at startup."""
+    """Pre-load the embedding model, vectorstore, and API client at startup."""
     _get_vectorstore()
+    _get_client()
 
 
-def retrieve_chunks(question: str, k: int = 3) -> list[str]:
+def retrieve_chunks(question: str, k: int = 5) -> list[str]:
     """Return the top-k most semantically similar chunks to the question."""
     vs = _get_vectorstore()
     docs = vs.similarity_search(question, k=k)
@@ -63,7 +72,7 @@ async def stream_response(question: str, personality: str):
     chunks = retrieve_chunks(question)
     system, user_message = build_prompt(question, chunks, personality)
 
-    client = AsyncAnthropic(api_key=settings.claude_api_key)
+    client = _get_client()
 
     try:
         async with client.messages.stream(
